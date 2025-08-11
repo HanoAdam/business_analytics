@@ -1,0 +1,21 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 28px;
+  overflow-y: auto;
+}
+
+.main-content.no-padding {
+  padding: 0;
+}
+
+.page {
+  width: 100%;
+  max-width: calc(100vw - var(--sidebar-width));
+  margin: 0;
+}
+

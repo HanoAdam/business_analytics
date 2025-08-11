@@ -1,0 +1,31 @@
+:root {
+  --sidebar-bg: #ffffff;
+  --sidebar-width: 256px;
+  --sidebar-text: #1f2230;
+  --sidebar-muted: #6b7280;
+  --sidebar-hover: #f3f4f6;
+  --border: #e5e7eb;
+  --accent: #6c5dd3;
+  --main-bg: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+  background: var(--main-bg);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Utility */
+.muted { color: var(--sidebar-muted); }
+

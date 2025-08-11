@@ -1,0 +1,166 @@
+[
+  {
+    "team": "Product",
+    "participants": [
+      "stephanielucas@orgone.com",
+      "joelwilliams@orgone.com",
+      "briannalee@orgone.com",
+      "karenstrickland@orgone.com",
+      "michaelfarrell@orgone.com",
+      "pamelajames@orgone.com",
+      "brookebass@orgone.com",
+      "pamelalee@orgone.com",
+      "dianebeck@orgone.com"
+    ],
+    "epics": [
+      "Infrastructure Overhaul",
+      "Infrastructure MVP",
+      "Auth Phase 2"
+    ]
+  },
+  {
+    "team": "Data",
+    "participants": [
+      "cynthiarowe@orgone.com",
+      "karlalewis@orgone.com",
+      "leahhall@orgone.com",
+      "gavinanderson@orgone.com",
+      "kennethlopez@orgone.com"
+    ],
+    "epics": [
+      "Insights Migration",
+      "Infrastructure MVP",
+      "Editor Improvements",
+      "Infrastructure Migration"
+    ]
+  },
+  {
+    "team": "Customer Success",
+    "participants": [
+      "jesusturner@orgone.com",
+      "jamiemayo@orgone.com",
+      "laurenkennedy@orgone.com",
+      "garysantiago@orgone.com",
+      "justinriley@orgone.com"
+    ],
+    "epics": [
+      "Mobile Migration",
+      "Infrastructure Overhaul",
+      "Payments Phase 2",
+      "Insights Migration"
+    ]
+  },
+  {
+    "team": "Data",
+    "participants": [
+      "jamesrobinson@orgone.com",
+      "karlalewis@orgone.com",
+      "leahhall@orgone.com",
+      "tinaholmes@orgone.com",
+      "cynthiarowe@orgone.com",
+      "kennethlopez@orgone.com",
+      "gavinanderson@orgone.com"
+    ],
+    "epics": [
+      "Onboarding Stabilization",
+      "Mobile Overhaul",
+      "Payments Improvements",
+      "Auth Stabilization"
+    ]
+  },
+  {
+    "team": "Data",
+    "participants": [
+      "leahhall@orgone.com",
+      "gavinanderson@orgone.com",
+      "jamesrobinson@orgone.com",
+      "kennethlopez@orgone.com",
+      "karlalewis@orgone.com",
+      "cynthiarowe@orgone.com",
+      "tinaholmes@orgone.com"
+    ],
+    "epics": [
+      "Payments Stabilization",
+      "Auth Stabilization"
+    ]
+  },
+  {
+    "team": "Data",
+    "participants": [
+      "jamesrobinson@orgone.com",
+      "gavinanderson@orgone.com",
+      "kennethlopez@orgone.com",
+      "cynthiarowe@orgone.com",
+      "tinaholmes@orgone.com",
+      "karlalewis@orgone.com",
+      "leahhall@orgone.com"
+    ],
+    "epics": [
+      "Payments Phase 2",
+      "Realtime Overhaul",
+      "Editor Improvements"
+    ]
+  },
+  {
+    "team": "Customer Success",
+    "participants": [
+      "garysantiago@orgone.com",
+      "laurenkennedy@orgone.com",
+      "jesusturner@orgone.com",
+      "jamiemayo@orgone.com",
+      "drtimothyyoung@orgone.com"
+    ],
+    "epics": [
+      "Onboarding Overhaul",
+      "Mobile Phase 2",
+      "Insights Improvements"
+    ]
+  },
+  {
+    "team": "Customer Success",
+    "participants": [
+      "jesusturner@orgone.com",
+      "laurenkennedy@orgone.com",
+      "jamiemayo@orgone.com",
+      "garysantiago@orgone.com",
+      "drtimothyyoung@orgone.com",
+      "justinriley@orgone.com"
+    ],
+    "epics": [
+      "Infrastructure Overhaul",
+      "Infrastructure Stabilization",
+      "Auth Stabilization"
+    ]
+  },
+  {
+    "team": "Marketing",
+    "participants": [
+      "marytucker@orgone.com",
+      "michaelrogers@orgone.com",
+      "lisacrosby@orgone.com",
+      "brandongregory@orgone.com",
+      "jeffreychavez@orgone.com",
+      "anthonyvaldez@orgone.com"
+    ],
+    "epics": [
+      "Payments Phase 2",
+      "Infrastructure Overhaul"
+    ]
+  },
+  {
+    "team": "Customer Success",
+    "participants": [
+      "jamiemayo@orgone.com",
+      "jesusturner@orgone.com",
+      "drtimothyyoung@orgone.com",
+      "garysantiago@orgone.com",
+      "laurenkennedy@orgone.com",
+      "justinriley@orgone.com"
+    ],
+    "epics": [
+      "Onboarding Stabilization",
+      "Mobile Phase 2",
+      "Payments Stabilization"
+    ]
+  }
+]
