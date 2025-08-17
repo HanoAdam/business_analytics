@@ -12,7 +12,23 @@ import {
   Scatter,
   ZAxis,
   ReferenceLine,
+  ComposedChart,
+  Line,
 } from 'recharts';
+
+// Synthetic employee data including prior-period values for trend calculation
+const EMPLOYEE_BASE = [
+  { name: 'Alice Johnson', team: 'Engineering', avgHours: 7.8, prevAvgHours: 7.5, productivity: 82, prevProductivity: 80 },
+  { name: 'Bob Smith', team: 'Engineering', avgHours: 8.6, prevAvgHours: 8.9, productivity: 75, prevProductivity: 78 },
+  { name: 'Carol Lee', team: 'Marketing', avgHours: 7.1, prevAvgHours: 6.8, productivity: 69, prevProductivity: 65 },
+  { name: 'David Kim', team: 'Product', avgHours: 7.4, prevAvgHours: 7.6, productivity: 77, prevProductivity: 79 },
+  { name: 'Emma Davis', team: 'Design', avgHours: 6.9, prevAvgHours: 7.2, productivity: 73, prevProductivity: 70 },
+  { name: 'Frank Moore', team: 'Marketing', avgHours: 7.6, prevAvgHours: 7.3, productivity: 71, prevProductivity: 68 },
+  { name: 'Grace Patel', team: 'Product', avgHours: 8.2, prevAvgHours: 8.0, productivity: 84, prevProductivity: 83 },
+  { name: 'Hector Alvarez', team: 'Engineering', avgHours: 8.9, prevAvgHours: 8.4, productivity: 88, prevProductivity: 86 },
+  { name: 'Ivy Chen', team: 'Design', avgHours: 7.2, prevAvgHours: 7.0, productivity: 79, prevProductivity: 77 },
+  { name: 'Jason Brown', team: 'Product', avgHours: 7.7, prevAvgHours: 7.8, productivity: 81, prevProductivity: 82 },
+];
 
 const TEAMS = ['All', 'Engineering', 'Marketing', 'Product', 'Design'];
 const PROJECTS = ['Main Project', 'Mobile App', 'Website Revamp', 'Growth Experiments'];
@@ -80,6 +96,65 @@ const Home = () => {
     });
     return { high, low };
   }, [meetingsScatterData]);
+
+  // Team-level hours vs Sales Deals (dual-axis style scatter + trend line)
+  const teamHoursDeals = useMemo(() => {
+    // Build points for each team (exclude 'All')
+    const teams = TEAMS.filter((t) => t !== 'All');
+
+    // Sum hours per team across projects
+    const points = teams.map((team) => {
+      const projectHours = TEAM_PROJECT_HOURS[team] || {};
+      const totalHours = PROJECTS.reduce((sum, p) => sum + (projectHours[p] || 0), 0);
+      return { team, hours: totalHours };
+    });
+
+    // Synthetic Sales Deals showing diminishing returns vs hours
+    const pointsWithDeals = points.map((p) => {
+      const deals = Math.round(15 + 10 * Math.log(p.hours / 100));
+      return { ...p, deals };
+    });
+
+    // Fit y = a * ln(x) + b via least squares
+    const lnxs = pointsWithDeals.map((p) => Math.log(p.hours));
+    const ys = pointsWithDeals.map((p) => p.deals);
+    const n = pointsWithDeals.length;
+    const sumLnX = lnxs.reduce((s, v) => s + v, 0);
+    const sumY = ys.reduce((s, v) => s + v, 0);
+    const sumLnX2 = lnxs.reduce((s, v) => s + v * v, 0);
+    const sumYLnX = pointsWithDeals.reduce((s, p, i) => s + ys[i] * lnxs[i], 0);
+
+    const denom = n * sumLnX2 - sumLnX * sumLnX;
+    const a = denom !== 0 ? (n * sumYLnX - sumLnX * sumY) / denom : 0;
+    const b = n !== 0 ? (sumY - a * sumLnX) / n : 0;
+
+    // Generate smooth trendline across the observed hours range
+    const minX = Math.min(...pointsWithDeals.map((p) => p.hours));
+    const maxX = Math.max(...pointsWithDeals.map((p) => p.hours));
+    const samples = 24;
+    const step = (maxX - minX) / (samples - 1 || 1);
+    const trend = Array.from({ length: samples }, (_, i) => {
+      const x = minX + i * step;
+      const y = a * Math.log(x) + b;
+      return { hours: x, deals: y };
+    });
+
+    return { points: pointsWithDeals, trend, minX, maxX };
+  }, []);
+
+  // Prepare employee rows with calculated revenue and deltas for trends
+  const employeeRows = useMemo(() => {
+    const MIN_REV = 110000;
+    const MAX_REV = 750000;
+    const calcRevenueFromProductivity = (prod) => Math.round(MIN_REV + (prod / 100) * (MAX_REV - MIN_REV));
+
+    return EMPLOYEE_BASE.map((e) => {
+      const revenue = calcRevenueFromProductivity(e.productivity);
+      const hoursDelta = e.avgHours - e.prevAvgHours;
+      const prodDelta = e.productivity - e.prevProductivity;
+      return { ...e, revenue, hoursDelta, prodDelta };
+    });
+  }, []);
 
   return (
     <div className="page home-page">
@@ -212,8 +287,112 @@ const Home = () => {
             </ResponsiveContainer>
           </div>
         </section>
-        <div className="chart-card chart-card--empty" aria-hidden="true" />
+        {/* Dual-axis style: Hours (x) vs Sales Deals (y), points = teams, plus trend line */}
+        <section className="chart-card" aria-labelledby="hours-deals-heading">
+          <div className="chart-header">
+            <h2 id="hours-deals-heading">Hours vs Sales Deals (by team)</h2>
+          </div>
+          <div className="chart-body">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={teamHoursDeals.points} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  type="number"
+                  dataKey="hours"
+                  name="Hours"
+                  unit="hrs"
+                  tick={{ fontSize: 12 }}
+                  domain={[Math.floor((teamHoursDeals.minX - 10) / 10) * 10, Math.ceil((teamHoursDeals.maxX + 10) / 10) * 10]}
+                />
+                <YAxis
+                  yAxisId="left"
+                  type="number"
+                  dataKey="deals"
+                  name="Sales Deals"
+                  tick={{ fontSize: 12 }}
+                  width={50}
+                  domain={[0, 'dataMax + 5']}
+                />
+                <Tooltip
+                  cursor={{ strokeDasharray: '3 3' }}
+                  content={({ active, payload }) => {
+                    if (!active || !payload || payload.length === 0) return null;
+                    const d = payload[0].payload;
+                    return (
+                      <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 10px', boxShadow: '0 8px 18px rgba(2, 8, 23, 0.06)' }}>
+                        <div style={{ fontWeight: 700, marginBottom: 4 }}>{d.team || 'Trend'}</div>
+                        <div style={{ fontSize: 12, color: '#475569' }}>
+                          <div>Hours: <strong>{Math.round(d.hours)}</strong></div>
+                          <div>Sales Deals: <strong>{Math.round(d.deals)}</strong></div>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+                <Scatter yAxisId="left" data={teamHoursDeals.points} name="Teams" fill="#0ea5e9" />
+                <Line yAxisId="left" type="monotone" name="Trend" dataKey="deals" data={teamHoursDeals.trend} dot={false} stroke="#64748b" strokeWidth={2} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
       </div>
+
+      {/* Employee table */}
+      <section className="chart-card" aria-labelledby="employee-table-heading">
+        <div className="chart-header">
+          <h2 id="employee-table-heading">Employees</h2>
+        </div>
+        <div className="table-wrapper">
+          <table className="data-table" role="table">
+            <thead>
+              <tr>
+                <th scope="col">Employee</th>
+                <th scope="col">Team</th>
+                <th scope="col" className="col-num">Avg hours/day</th>
+                <th scope="col" className="col-num">Productivity</th>
+                <th scope="col" className="col-num">Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employeeRows.map((emp) => {
+                const hoursDeltaAbs = Math.abs(emp.hoursDelta).toFixed(1);
+                const prodDeltaAbs = Math.abs(emp.prodDelta).toFixed(0);
+                const hoursDeltaClass = emp.hoursDelta >= 0 ? 'positive' : 'negative';
+                const prodDeltaClass = emp.prodDelta >= 0 ? 'positive' : 'negative';
+                return (
+                  <tr key={emp.name}>
+                    <td>{emp.name}</td>
+                    <td>{emp.team}</td>
+                    <td className="col-num">
+                      <div className="cell-main">{emp.avgHours.toFixed(1)}h</div>
+                      <div className={`kpi-trend ${hoursDeltaClass}`} aria-label="Trend vs prior period">
+                        <span className="trend-icon" aria-hidden>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M3 7l7 7 4-4 7 7" />
+                          </svg>
+                        </span>
+                        {emp.hoursDelta >= 0 ? '+' : '-'}{hoursDeltaAbs}
+                      </div>
+                    </td>
+                    <td className="col-num">
+                      <div className="cell-main">{emp.productivity}</div>
+                      <div className={`kpi-trend ${prodDeltaClass}`} aria-label="Trend vs prior period">
+                        <span className="trend-icon" aria-hidden>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M3 7l7 7 4-4 7 7" />
+                          </svg>
+                        </span>
+                        {emp.prodDelta >= 0 ? '+' : '-'}{prodDeltaAbs}
+                      </div>
+                    </td>
+                    <td className="col-num">${emp.revenue.toLocaleString()}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   );
 };

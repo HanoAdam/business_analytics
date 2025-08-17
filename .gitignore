@@ -10,3 +10,6 @@ dist/
 
 # OS/Editor
 .DS_Store
+
+# secrets
+/here_new_key

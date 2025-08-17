@@ -231,3 +231,45 @@
 }
 
 
+
+/* Data table */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.data-table thead th {
+  text-align: left;
+  font-size: 12px;
+  color: #475569;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafc;
+}
+
+.data-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table .col-num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cell-main {
+  font-weight: 700;
+  color: #0f172a;
+}
